@@ -10,6 +10,9 @@
 var architect = {
     run: function(spawn1, room1, energyAvailable) {
 
+
+
+
         // The First Extension //
 
         // The base position object is the spawn //
@@ -23,7 +26,7 @@ var architect = {
         var tPosition3 = new RoomPosition(sPosition.x+2, sPosition.y, room1.name);
         var tPosition4 = new RoomPosition(sPosition.x-2, sPosition.y, room1.name);
         // Positions for up to 16 extensions //
-        
+
         var ePosition1 = new RoomPosition(sPosition.x-1, sPosition.y-1, room1.name);
         var ePosition2 = new RoomPosition(sPosition.x+1, sPosition.y+1, room1.name);
         var ePosition3 = new RoomPosition(sPosition.x-1, sPosition.y+1, room1.name);
@@ -40,6 +43,77 @@ var architect = {
         var ePosition14 = new RoomPosition(sPosition.x-1, sPosition.y+5, room1.name);
         var ePosition15 = new RoomPosition(sPosition.x+1, sPosition.y-5, room1.name);
         var ePosition16 = new RoomPosition(sPosition.x+1, sPosition.y+5, room1.name);
+
+        // Controller Level 3 Switch to Container Mining
+
+        if(room1.controller.level == 3) {
+          // Define The sources
+
+          var sources = room1.find(FIND_SOURCES);
+
+          if(sources[0]){var sourceOne = sources[0]; var sourceOnePos = sourceOne.pos;}
+          if(sources[1]){var sourceTwo = sources[1]; var sourceTwoPos = sourceOne.pos;}
+          // Source Two Extension Construction
+          if(sourceTwo && validSpot != 1){
+            if(terrain.get(sourceTwoPos.x+1,sourceTwoPos.y) == 0 || terrain.get(sourceTwoPos.x+1,sourceTwoPos.y) == 2 ){
+              var validSpot = 1; sourceTwoPos.x = sourceTwoPos.x+1; sourceTwoPos.createConstructionSite(STRUCTURE_CONTAINER);
+              Game.spawns['Spawn1'].memory.sourceTwoPos = sourceTwoPos;
+            }
+           }
+           if(sourceTwo && validSpot != 1){
+             if(terrain.get(sourceTwoPos.x+1,sourceTwoPos.y) == 0 || terrain.get(sourceTwoPos.x-1,sourceTwoPos.y) == 2 ){
+               var validSpot = 1; sourceTwoPos.x = sourceTwoPos.x-1; sourceTwoPos.createConstructionSite(STRUCTURE_CONTAINER);
+               Game.spawns['Spawn1'].memory.sourceTwoPos = sourceTwoPos;
+             }
+            }
+            if(sourceTwo && validSpot != 1){
+              if(terrain.get(sourceTwoPos.x,sourceTwoPos.y+1) == 0 || terrain.get(sourceTwoPos.x,sourceTwoPos.y+1) == 2 ){
+                var validSpot = 1; sourceTwoPos.y = sourceTwoPos.y+1; sourceTwoPos.createConstructionSite(STRUCTURE_CONTAINER);
+                Game.spawns['Spawn1'].memory.sourceTwoPos = sourceTwoPos;
+              }
+             }
+             if(sourceTwo && validSpot != 1){
+               if(terrain.get(sourceTwoPos.x,sourceTwoPos.y-1) == 0 || terrain.get(sourceTwoPos.x,sourceTwoPos.y-1) == 2 ){
+                 var validSpot = 1; sourceTwoPos.y = sourceTwoPos.y-1; sourceTwoPos.createConstructionSite(STRUCTURE_CONTAINER);
+                 Game.spawns['Spawn1'].memory.sourceTwoPos = sourceTwoPos;
+               }
+              }
+          // Source One Extension Construction
+          if(sourceOne && validSpot != 1){
+            if(terrain.get(sourceOnePos.x+1,sourceOnePos.y) == 0 || terrain.get(sourceOnePos.x+1,sourceOne.y) == 2 ){
+              var validSpot = 1; sourceOnePos.x = sourceOnePos.x+1; sourceOnePos.createConstructionSite(STRUCTURE_CONTAINER);
+              Game.spawns['Spawn1'].memory.sourceOnePos = sourceOnePos;
+            }
+           }
+           if(sourceOne && validSpot != 1){
+             if(terrain.get(sourceOnePos.x+1,sourceOnePos.y) == 0 || terrain.get(sourceOnePos.x-1,sourceOne.y) == 2 ){
+               var validSpot = 1; sourceOnePos.x = sourceOnePos.x-1; sourceOnePos.createConstructionSite(STRUCTURE_CONTAINER);
+               Game.spawns['Spawn1'].memory.sourceOnePos = sourceOnePos;
+             }
+            }
+            if(sourceOne && validSpot != 1){
+              if(terrain.get(sourceOnePos.x,sourceOnePos.y+1) == 0 || terrain.get(sourceOnePos.x,sourceOne.y+1) == 2 ){
+                var validSpot = 1; sourceOnePos.y = sourceOnePos.y+1; sourceOnePos.createConstructionSite(STRUCTURE_CONTAINER);
+                Game.spawns['Spawn1'].memory.sourceOnePos = sourceOnePos;
+              }
+             }
+             if(sourceOne && validSpot != 1){
+               if(terrain.get(sourceOnePos.x,sourceOnePos.y-1) == 0 || terrain.get(sourceOnePos.x,sourceOne.y-1) == 2 ){
+                 var validSpot = 1; sourceOnePos.y = sourceOnePos.y-1; sourceOnePos.createConstructionSite(STRUCTURE_CONTAINER);
+                 Game.spawns['Spawn1'].memory.sourceOnePos = sourceOnePos;
+               }
+              }
+              // set a memory on the spawn indicating we're switching to container Mining
+              Game.spawns['Spawn1'].memory.containerMining = 1;
+              // Reinstate These
+              // Game.spawns['Spawn1'].memory.harvesters_0 = 1;
+              // Game.spawns['Spawn1'].memory.harvesters_1 = 1;
+          }
+
+
+
+
+
 
         // Extention Creation //
 
@@ -104,8 +178,8 @@ var architect = {
 
           spawn1.memory.towersLvl2 = 1;
         }
-        // Build Roads Around Extensions
 
+        // Build Roads Around Extensions
         var extensions = room1.find(
             FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTENSION}});
 
@@ -115,37 +189,7 @@ var architect = {
           room1.createConstructionSite(extensions[i].pos.x,extensions[i].pos.y+1, STRUCTURE_ROAD);
           room1.createConstructionSite(extensions[i].pos.x,extensions[i].pos.y-1, STRUCTURE_ROAD);
         }
-/*
-        if(room1.controller.level == 2 && spawn1.memory.extensionRoadsLvl2 != 1)
-        {
-          room1.createConstructionSite(ePosition1.x+1,ePosition1.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition1.x-1,ePosition1.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition1.x,ePosition1.y+1, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition1.x,ePosition1.y-1, STRUCTURE_ROAD);
 
-          room1.createConstructionSite(ePosition2.x+1,ePosition2.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition2.x-1,ePosition2.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition2.x,ePosition2.y+1, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition2.x,ePosition2.y-1, STRUCTURE_ROAD);
-
-          room1.createConstructionSite(ePosition3.x+1,ePosition3.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition3.x-1,ePosition3.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition3.x,ePosition3.y+1, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition3.x,ePosition3.y-1, STRUCTURE_ROAD);
-
-          room1.createConstructionSite(ePosition4.x+1,ePosition4.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition4.x-1,ePosition4.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition4.x,ePosition4.y+1, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition4.x,ePosition4.y-1, STRUCTURE_ROAD);
-
-          room1.createConstructionSite(ePosition5.x+1,ePosition5.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition5.x-1,ePosition5.y, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition5.x,ePosition5.y+1, STRUCTURE_ROAD);
-          room1.createConstructionSite(ePosition5.x,ePosition5.y-1, STRUCTURE_ROAD);
-
-          spawn1.memory.extensionRoadsLvl2 = 1;
-        }
-*/
         // Building Roads from the spawn to the sources in the room
         var sources = spawn1.room.find(FIND_SOURCES);
 
@@ -173,7 +217,6 @@ var architect = {
 
         spawn1.memory.controllerRoads = 1;
         }
-
 
         // Container for Upgrading //
         // Retrieve memory indicating if a container has been built by the controller
@@ -213,5 +256,6 @@ var architect = {
         else {console.log("No Valid Upgrade Container Locations");}
 
       }
+
 };
 module.exports = architect;

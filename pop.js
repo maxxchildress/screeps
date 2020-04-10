@@ -1,8 +1,8 @@
 /////////// Population Control //////////////
-// To Do: 
+// To Do:
 //        Add defenders
-//        
-//        
+//
+//
 //
 // To Set Desired Populations Use In The Console
 //
@@ -11,39 +11,41 @@
 
 var pop = {
 
-       
-    
+
+
 
     run: function(spawn, targetRoom, energyAvailable) {
         var controllerLevel = Game.spawns['Spawn1'].room.controller.level;
 	    var controllerNeeded = Game.spawns['Spawn1'].room.controller.progressTotal;
 	    var controllerCurrent = Game.spawns['Spawn1'].room.controller.progress;
-	    
+
         console.log('**************| ' + spawn.name + ' /  Room Controller Progress: ' + controllerCurrent + ' / ' + controllerNeeded + ' - Level: ' + controllerLevel + ' |***************');
-        
-        // VARIABLES //     
-        
+
+        // VARIABLES //
+
         // create unique numbered names for creeps //
         var creepName = spawn.memory.creepName + 1;
         console.log('CreepName = ' + creepName);
         if(creepName >= 9999){spawn.memory.creepName = 0;}
         /////////////////////////////////////////////
-        
-        
-        
-        
-        
+
+
+
+
+
         var numberOfSources = targetRoom.find(FIND_SOURCES).length;
 
         var desiredClaimers = 0;
         var desiredExpansionBuilders = 0;
+
+        var containerMining = Game.spawns['Spawn1'].memory.containerMining;
 
         var desiredeR1harvesters_0 = spawn.memory.harvesters_eR1_0;
         var desiredeR2harvesters_0 = spawn.memory.harvesters_eR2_0;
         var desiredeR3harvesters_0 = spawn.memory.harvesters_eR3_0;
         var desiredharvesters_3 = spawn.memory.harvesters_3;
         var desiredharvesters_2 = spawn.memory.harvesters_2;
-        var desiredharvesters_1 = spawn.memory.harvesters_1; 
+        var desiredharvesters_1 = spawn.memory.harvesters_1;
         var desiredharvesters_0 = spawn.memory.harvesters_0;
 
         var desiredLinkers = spawn.memory.linkers;
@@ -77,6 +79,7 @@ var pop = {
         //////////////////////
 
         // Worker Loadouts //
+        var containerMiner = [WORK,WORK,WORK,WORK,WORK,MOVE,MOVE];
         var linkerLoadout = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE];
         var smallCreep = [WORK,CARRY,MOVE];
         var mediumCreep = [WORK,CARRY,MOVE,MOVE];
@@ -91,7 +94,7 @@ var pop = {
                             MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,];
         var claimerBody = [MOVE,MOVE,MOVE,MOVE,CLAIM];
         ///////////////////////
-        
+
         // VARIABLE FOR REPLACABLE CREEP //
         for(var name in Game.creeps) {
             var c = Game.creeps[name];
@@ -102,7 +105,7 @@ var pop = {
             }
          }
         /// Establishing Creep Loadout Variables ///
-        if(energyAvailable >= 1300) { 
+        if(energyAvailable >= 1300) {
             var loadOut = superiorCreep;
             console.log('Pop Control: Energy Available: ' + energyAvailable + ': Making superiorCreeps');
         }
@@ -132,27 +135,37 @@ var pop = {
         }
         /////////////////////////////////////////////
 
-
+        // Keep Container Harvesters Alive
+        if(harvesters_0.length < desiredharvesters_0 && containerMining == 1) {
+            var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'containerHarvester_0', building: false, fullLoad: 0}});
+            console.log('Spawning new Source 0 container harvester: ' + newName);
+            spawn.memory.creepName = creepName;
+        }
+        if(harvesters_1.length < desiredharvesters_1 && containerMining == 1) {
+            var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'containerHarvester_1', building: false, fullLoad: 0}});
+            console.log('Spawning new Source 0 container harvester: ' + newName);
+            spawn.memory.creepName = creepName;
+        }
+        /////////////////////////////////////////////
 
 
         // Keep a certain amount of harvesters
-        if(harvesters_0.length < desiredharvesters_0) {
+        if(harvesters_0.length < desiredharvesters_0 && containerMining != 1) {
             var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'harvester_0', building: false, fullLoad: 0}});
             console.log('Spawning new Source 0 harvester: ' + newName);
             spawn.memory.creepName = creepName;
-            
         }
-        if(harvesters_1.length < desiredharvesters_1) {
+        if(harvesters_1.length < desiredharvesters_1 && containerMining != 1) {
             var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'harvester_1', building: false, fullLoad: 0}});
             console.log('Spawning new Source 1 harvester: ' + newName);
             spawn.memory.creepName = creepName;
         }
-        if(harvesters_2.length < desiredharvesters_2) {
+        if(harvesters_2.length < desiredharvesters_2 && containerMining != 1) {
             var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'harvester_2', building: false, fullLoad: 0}});
             console.log('Spawning new Source 2 harvester: ' + newName);
             spawn.memory.creepName = creepName;
         }
-        if(harvesters_3.length < desiredharvesters_3) {
+        if(harvesters_3.length < desiredharvesters_3 && containerMining != 1) {
             var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'harvester_3', building: false, fullLoad: 0}});
             console.log('Spawning new Source 3 harvester: ' + newName);
             spawn.memory.creepName = creepName;
@@ -172,13 +185,13 @@ var pop = {
                         role: 'expansionBuilder', building: false
                     }});
             spawn.memory.creepName = creepName;
-                } 
+                }
             }
         }
         // Expansion room harvesters
-        if(spawn.memory.expand >= 1) { 
-            //if(energyAvailable >= 800) { 
-                
+        if(spawn.memory.expand >= 1) {
+            //if(energyAvailable >= 800) {
+
                 if(harvesters_eR1_0.length < desiredeR1harvesters_0) {
                     console.log('Trying to build an expansion harvester' + harvesters_eR1_0.length + '/' + desiredeR1harvesters_0);
                     var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'harvester_eR1_0', building: false, fullLoad: 0
@@ -201,15 +214,15 @@ var pop = {
         }
         // Keep a certain amount of defenders
         if(defenders.length < desiredDefenders && !harvestersFirst) {
-            
+
            var newName = spawn.spawnCreep(earlyDefender,  {memory: {role: 'defender', building: false}});
-           
+
             spawn.memory.creepName = creepName;
         }
         // Keep a certain amount of linkers
         if(linkers.length < desiredLinkers && !harvestersFirst) {
             var newName = spawn.spawnCreep(linkerLoadOut, creepName, {memory: {role: 'linker'}});
-            
+
             spawn.memory.creepName = creepName;
         }
         // Keep Expansion 1 Claimers
@@ -217,7 +230,7 @@ var pop = {
             if(energyAvailable >= 800) {
                 if(claimers.length < desiredClaimers) {
                     var newName = spawn.spawnCreep(claimerBody,  {memory: {role: 'claimer' }});
-                    
+
             spawn.memory.creepName = creepName;
                 }
             }
@@ -225,16 +238,16 @@ var pop = {
         // Keep a certain amount of upgraders
         if(upgraders.length < desiredUpgraders && !harvestersFirst) {
             var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'upgrader'}});
-            
+
             console.log('Spawning new upgrader: ' + newName);
-            
+
             spawn.memory.creepName = creepName;
         }
         // Keep a certain amount of builders
         if(builders.length < desiredBuilders && !harvestersFirst) {
             var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'builder', building: false}});
             console.log('Spawning new builder: ' + newName);
-            
+
             spawn.memory.creepName = creepName;
         }
 

@@ -1,8 +1,11 @@
+// TODO Create Movers to refil extensions from mining containers
+
+
 //////////////////Main/////////////////////
 // To expand to another room set expand = 1
 //
 // To Set Desired Populations Use The Below Function In The Console
-// Game.spawns['Spawn1'].memory.harvesters_1 = 4; 
+// Game.spawns['Spawn1'].memory.harvesters_1 = 4;
 // with builders,upgraders,defenders,harvesters_0,harvesters_eR1_0 and repairers being other options
 
 // Import all requires and modules //
@@ -20,6 +23,7 @@ var roleTower = require('role.tower');
 var rolesatHarvester = require('role.satharvester');
 var visuals = require('visuals');
 var architect = require('architect');
+var roleContainerHarvester = require('role.container.harvester');
 
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
@@ -111,6 +115,10 @@ module.exports.loop = function () {
             roleHarvester.run(creep, expansionFlag1);
             visuals.run(creep, "🚚");
         }
+        if(creep.memory.role == 'containerHarvester_0' || creep.memory.role == 'containerHarvester_1') {
+            roleContainerHarvester.run(creep, expansionFlag1);
+            visuals.run(creep, "🚚C");
+        }
         if(creep.memory.role == "harvester_eR1_0") {
             rolesatHarvester.run(creep, expansionFlag1);
             visuals.run(creep, "🚚+1");
@@ -156,6 +164,6 @@ module.exports.loop = function () {
     // Run Tower Code
     if(towers1.length) {
         roleTower.run();
-        // console.log(towers1);
+        console.log('Towers: ' + towers1.length);
     }
 }
