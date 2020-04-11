@@ -1,6 +1,6 @@
 //////////// Harvester Routine //////////////
 // To Do List: 1. Improve building mode import builder routine?
-//             2. 
+//             2.
 
 var roleBuilder = require('role.builder');
 var roleUpgrader = require('role.upgrader');
@@ -33,30 +33,30 @@ var roleHarvester = {
         // Check for energy on the ground next to the harvester //
         var energy = creep.pos.findInRange(FIND_DROPPED_RESOURCES , 1);
         if(energy[0]){creep.pickup(energy[0]);}
-        ////////////////////////////////////////////////////////// 
+        //////////////////////////////////////////////////////////
 
         ////////////////////////////
         // Remove Full Containers //
         var cntnrs = roomContainer.length - 1;
         for (cntnrs; cntnrs >= 0; cntnrs--) {
             if(_.sum(roomContainer[cntnrs].store) >= 2000){
-                _.pull(roomContainer, roomContainer[cntnrs]); 
+                _.pull(roomContainer, roomContainer[cntnrs]);
             }
         }
-        ////////////////////////////////////////////////////////////// 
+        //////////////////////////////////////////////////////////////
         // Check for full extensions and remove them from the list. //
         var ext = extensions.length - 1;
         for (ext; ext >= 0; ext--) {
             if(extensions[ext].energy == 50){
                 // Remove any extension with 50 energy from the array.
                 // console.log('Removing ' + extensions[ext] + 'from extension array');
-                _.pull(extensions, extensions[ext]); 
+                _.pull(extensions, extensions[ext]);
             }
         }
         /////////////////////////////////////////////////
-        // Find the closest extension that isn't empty // 
+        // Find the closest extension that isn't empty //
         if(extensions.length){var closestExtension = creep.pos.findClosestByPath(extensions);}
-        
+
         if(closestExtension != null){
             if(closestExtension.energy == 50){
                 closestExtensions = null;
@@ -77,15 +77,14 @@ var roleHarvester = {
             }
         }
 
-        
 
         // If room is not at capacity we arent building with harvesters
         if (homeRoom.energyAvailable != homeRoom.energyCapacityAvailable) {
             creep.memory.building = false;
         }
-        
+
         if (creep.carryCapacity == creep.carry.energy) {
-            creep.memory.fullLoad = 1; 
+            creep.memory.fullLoad = 1;
         }
         if (creep.carry.energy == 0) {
             creep.memory.fullLoad = 0;
@@ -98,7 +97,7 @@ var roleHarvester = {
                 creep.moveTo(home_source[0], {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});
             }
             else {
-                creep.harvest(home_source[0]); 
+                creep.harvest(home_source[0]);
             }
             // Harvester 1 Routine
             if (creep.memory.role == 'harvester_1' && creep.harvest(home_source[1]) == ERR_NOT_IN_RANGE) {
@@ -134,17 +133,17 @@ var roleHarvester = {
                 creep.transfer(Game.spawns['Spawn1'], RESOURCE_ENERGY);
             }
             if (creep.carry.energy == 0) {
-                creep.memory.fullLoad = 0; 
+                creep.memory.fullLoad = 0;
             }
 
         }
         // Extensions
-        else if(closestExtension != null && closestExtension.energy < 50) {   
+        else if(closestExtension != null && closestExtension.energy < 50) {
             //console.log('Harvesters are detecting empty extensions.');
             if (creep.transfer(closestExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(closestExtension, {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});
                 if (creep.carry.energy == 0) {
-                    creep.memory.fullLoad = 0; 
+                    creep.memory.fullLoad = 0;
                 }
             }
         }
@@ -174,20 +173,20 @@ var roleHarvester = {
                 if(creep.carry.energy > 0) {creep.transfer(storage, RESOURCE_ENERGY);}
                 if(creep.carry.energy == 0) {creep.memory.fullLoad = 0;}
             }
-        } 
+        }
         // Begin Constrction Routine
         else if(creep.room.energyAvailable == creep.room.energyCapacityAvailable) {
             // If there ARE construction sites begin constructing
             if(targets.length) {
                 roleBuilder.run(creep);
             }
-            // else {creep.memory.building = false; roleUpgrader.run(creep);} 
+            // else {creep.memory.building = false; roleUpgrader.run(creep);}
         }
         // else {creep.memory.building = false;}
-        
+
 	}
-	
-	
+
+
 };
 
 module.exports = roleHarvester;

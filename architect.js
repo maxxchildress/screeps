@@ -44,9 +44,10 @@ var architect = {
         var ePosition15 = new RoomPosition(sPosition.x+1, sPosition.y-5, room1.name);
         var ePosition16 = new RoomPosition(sPosition.x+1, sPosition.y+5, room1.name);
 
-        // Controller Level 3 Switch to Container Mining
-
-        if(room1.controller.level == 3) {
+        ///////////////////////////////////////////////////
+        // Controller Level 3 Switch to Container Mining //
+        var containerMining = spawn1.memory.containerMining;
+        if(room1.controller.level == 3 && containerMining != 1) {
           // Define The sources
 
           var sources = room1.find(FIND_SOURCES);
@@ -103,12 +104,27 @@ var architect = {
                  Game.spawns['Spawn1'].memory.sourceOnePos = sourceOnePos;
                }
               }
-              // set a memory on the spawn indicating we're switching to container Mining
-              Game.spawns['Spawn1'].memory.containerMining = 1;
-              // Reinstate These
-              // Game.spawns['Spawn1'].memory.harvesters_0 = 1;
-              // Game.spawns['Spawn1'].memory.harvesters_1 = 1;
+              // set a memory on the spawn indicating we're switching to
+              // container mining after all containers are built which
+              // should be three total containers at this point
+
+              // Get the number of containers
+              var roomContainers = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+
+              if(roomContainers.length >= 3){
+                console.log('CONTAINER MINING INITIATED');
+                Game.spawns['Spawn1'].memory.containerMining = 1;
+                Game.spawns['Spawn1'].memory.desiredMovers_0 = 1;
+                Game.spawns['Spawn1'].memory.desiredMovers_1 = 1;
+                Game.spawns['Spawn1'].memory.desiredContainerHarvesters_0 = 1;
+                Game.spawns['Spawn1'].memory.desiredContainerHarvesters_1 = 1;
+                Game.spawns['Spawn1'].memory.harvesters_0 = 0;
+                Game.spawns['Spawn1'].memory.harvesters_1 = 0;
+              }
           }
+
+          // END CONTAINER MINING SWITCH OFF //
+          /////////////////////////////////////
 
 
 

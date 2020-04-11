@@ -6,16 +6,13 @@
 //
 // To Set Desired Populations Use In The Console
 //
-// Game.spawns['Spawn1'].memory.harvesters_1 = 4;
+// Game.spawns['Spawnharvesters_1'].memory.harvesters_1 = 4;
 // with builders,upgraders,defenders,harvesters_0,harvesters_eR1_0 and repairers being other options
 
 var pop = {
 
-
-
-
     run: function(spawn, targetRoom, energyAvailable) {
-        var controllerLevel = Game.spawns['Spawn1'].room.controller.level;
+      var controllerLevel = Game.spawns['Spawn1'].room.controller.level;
 	    var controllerNeeded = Game.spawns['Spawn1'].room.controller.progressTotal;
 	    var controllerCurrent = Game.spawns['Spawn1'].room.controller.progress;
 
@@ -25,20 +22,22 @@ var pop = {
 
         // create unique numbered names for creeps //
         var creepName = spawn.memory.creepName + 1;
-        console.log('CreepName = ' + creepName);
+        // console.log('CreepName = ' + creepName);
         if(creepName >= 9999){spawn.memory.creepName = 0;}
         /////////////////////////////////////////////
-
-
-
-
 
         var numberOfSources = targetRoom.find(FIND_SOURCES).length;
 
         var desiredClaimers = 0;
         var desiredExpansionBuilders = 0;
 
-        var containerMining = Game.spawns['Spawn1'].memory.containerMining;
+        var containerMining = spawn.memory.containerMining;
+        var desiredMovers_0 = spawn.memory.desiredMovers_0;
+        var desiredMovers_1 = spawn.memory.desiredMovers_1;
+
+        var desiredContainerHarvesters_0 = spawn.memory.desiredContainerHarvesters_0;
+        var desiredContainerHarvesters_1 = spawn.memory.desiredContainerHarvesters_1;
+
 
         var desiredeR1harvesters_0 = spawn.memory.harvesters_eR1_0;
         var desiredeR2harvesters_0 = spawn.memory.harvesters_eR2_0;
@@ -62,6 +61,12 @@ var pop = {
         var harvesters_1 = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester_1');
         var harvesters_0 = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester_0');
 
+        var containerHarvesters_0 = _.filter(Game.creeps, (creep) => creep.memory.role == 'containerHarvester_0');
+        var containerHarvesters_1 = _.filter(Game.creeps, (creep) => creep.memory.role == 'containerHarvester_1');
+
+        var movers_0 = _.filter(Game.creeps, (creep) => creep.memory.role == 'containerMovers_0');
+        var movers_1 = _.filter(Game.creeps, (creep) => creep.memory.role == 'containerMovers_1');
+
         var linkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'linker');
         var defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender');
         var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
@@ -75,11 +80,14 @@ var pop = {
         var expansionBuilders = _.filter(Game.creeps, (creep) => creep.memory.role == 'expansionBuilder');
 
         var harvestersFirst = false;
-        if(harvesters_0.length !=  desiredharvesters_0 && harvesters_1.length !=  desiredharvesters_1){var harvestersFirst = true; console.log('Harvesters First!');}
+        if(harvesters_0.length != desiredharvesters_0 &&
+           harvesters_1.length != desiredharvesters_1 && containerMining != 1)
+           {var harvestersFirst = true; console.log('Harvesters First!');}
         //////////////////////
 
         // Worker Loadouts //
         var containerMiner = [WORK,WORK,WORK,WORK,WORK,MOVE,MOVE];
+        var mover = [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
         var linkerLoadout = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE];
         var smallCreep = [WORK,CARRY,MOVE];
         var mediumCreep = [WORK,CARRY,MOVE,MOVE];
@@ -136,16 +144,30 @@ var pop = {
         /////////////////////////////////////////////
 
         // Keep Container Harvesters Alive
-        if(harvesters_0.length < desiredharvesters_0 && containerMining == 1) {
-            var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'containerHarvester_0', building: false, fullLoad: 0}});
+        if(containerHarvesters_0.length < desiredContainerHarvesters_0) {
+            var newName = spawn.spawnCreep(containerMiner, creepName, {memory: {role: 'containerHarvester_0', building: false, fullLoad: 0}});
             console.log('Spawning new Source 0 container harvester: ' + newName);
             spawn.memory.creepName = creepName;
         }
-        if(harvesters_1.length < desiredharvesters_1 && containerMining == 1) {
-            var newName = spawn.spawnCreep(loadOut, creepName, {memory: {role: 'containerHarvester_1', building: false, fullLoad: 0}});
-            console.log('Spawning new Source 0 container harvester: ' + newName);
+        if(containerHarvesters_1.length < desiredContainerHarvesters_1) {
+            var newName = spawn.spawnCreep(containerMiner, creepName, {memory: {role: 'containerHarvester_1', building: false, fullLoad: 0}});
+            console.log('Spawning new Source 1 container harvester: ' + newName);
             spawn.memory.creepName = creepName;
         }
+
+        // Keep Container Movers Alive
+        if(movers_0.length < desiredMovers_0) {
+            var newName = spawn.spawnCreep(mover, creepName, {memory: {role: 'containerMovers_0', building: false, fullLoad: 0}});
+            console.log('Spawning new Source 0 container mover: ' + newName);
+            spawn.memory.creepName = creepName;
+        }
+        if(movers_1.length < desiredMovers_1) {
+            var newName = spawn.spawnCreep(mover, creepName, {memory: {role: 'containerMovers_1', building: false, fullLoad: 0}});
+            console.log('Spawning new Source 0 container mover: ' + newName);
+            spawn.memory.creepName = creepName;
+        }
+
+
         /////////////////////////////////////////////
 
 
@@ -253,8 +275,10 @@ var pop = {
 
         ///////////// COUNTING CREEPS /////////////////
         console.log('ER:1 Source 0 Harvesters: ' + harvesters_eR1_0.length + '/' + desiredeR1harvesters_0);
-        console.log('Source 0 Harvesters: ' + harvesters_0.length + '/' + desiredharvesters_0 + ' | Source 1 Harvesters: ' + harvesters_1.length + '/' + desiredharvesters_1);
-        console.log('Source 2 Harvesters: ' + harvesters_2.length + '/' + desiredharvesters_2 + ' | Source 3 Harvesters: ' + harvesters_3.length + '/' + desiredharvesters_3);
+        if(containerMining != 1){
+          console.log('Source 0 Harvesters: ' + harvesters_0.length + '/' + desiredharvesters_0 + ' | Source 1 Harvesters: ' + harvesters_1.length + '/' + desiredharvesters_1);
+          console.log('Source 2 Harvesters: ' + harvesters_2.length + '/' + desiredharvesters_2 + ' | Source 3 Harvesters: ' + harvesters_3.length + '/' + desiredharvesters_3);
+        }
         console.log('Defenders: ' + defenders.length + '/' + desiredDefenders + ' | Repairers: ' + repairers.length + '/' + desiredRepairers + ' | Builders: ' + builders.length + '/' + desiredBuilders + ' | Upgraders: ' + upgraders.length + '/' + desiredUpgraders + ' | Claimers: ' + claimers.length + '/' + desiredClaimers + ' | Linkers: ' + linkers.length + '/' + desiredLinkers + ' | Expansion Builders: ' + expansionBuilders.length + '/' + desiredExpansionBuilders);
     }
 };

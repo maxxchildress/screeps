@@ -12,6 +12,7 @@
 var init = require('init');
 var pop = require('pop');
 
+var roleMover = require('role.mover');
 var roleClaimer = require('role.claimer');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
@@ -55,6 +56,8 @@ var spawn2 = Game.spawns['Spawn2'];
 var constructSites = spawn1.room.find(FIND_CONSTRUCTION_SITES);
 var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
 
+var containerMining = Game.spawns['Spawn1'].memory.containerMining;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,8 +92,8 @@ module.exports.loop = function () {
     // Always keep two upgraders for now.                                                  //
     if(spawn1.memory.upgraders <= 1) { spawn1.memory.upgraders = 2; }
     // always have atleast two harvester going.                                            //
-    if(spawn1.memory.harvesters_0 <= 0 && sources[0].energy >= 0) { spawn1.memory.harvesters_0 = 2; }
-    if(spawn1.memory.harvesters_1 <= 0 && sources[1].energy >= 0) { spawn1.memory.harvesters_1 = 2; }
+    if(spawn1.memory.harvesters_0 <= 0 && sources[0].energy >= 0 && containerMining != 1) { spawn1.memory.harvesters_0 = 2; }
+    if(spawn1.memory.harvesters_1 <= 0 && sources[1].energy >= 0 && containerMining != 1) { spawn1.memory.harvesters_1 = 2; }
     /////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -158,6 +161,10 @@ module.exports.loop = function () {
         if(creep.memory.role == 'linker') {
             roleLinker.run(creep);
             visuals.run(creep, "Lr");
+        }
+        if(creep.memory.role == 'containerMovers_0' || creep.memory.role == 'containerMovers_1') {
+            roleMover.run(creep);
+            visuals.run(creep, "Mvr");
         }
 
     }
