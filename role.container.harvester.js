@@ -26,6 +26,9 @@ var roleContainerHarvester = {
       if(creep.memory.role == 'containerHarvester_0'){
         creep.harvest(creep.pos.findClosestByRange(FIND_SOURCES));
       }
+      
+      ///////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////////
 
       // Stay on the position of sources extension position Source Two
       if(creep.memory.role == 'containerHarvester_1' && creep.pos != containerTwo.pos){

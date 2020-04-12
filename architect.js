@@ -20,13 +20,16 @@ var architect = {
         var cPosition = Game.spawns['Spawn1'].room.controller.pos;
         const terrain = new Room.Terrain(room1.name);
 
+        // Storage Box Location //
+        var storagePosition = new RoomPosition(sPosition.x,sPosition.y-2, room1.name);
+
         // Positions for up to four towers //
         var tPosition1 = new RoomPosition(sPosition.x, sPosition.y+2, room1.name);
         var tPosition2 = new RoomPosition(sPosition.x, sPosition.y-2, room1.name);
         var tPosition3 = new RoomPosition(sPosition.x+2, sPosition.y, room1.name);
         var tPosition4 = new RoomPosition(sPosition.x-2, sPosition.y, room1.name);
-        // Positions for up to 16 extensions //
 
+        // Positions for up to 16 extensions //
         var ePosition1 = new RoomPosition(sPosition.x-1, sPosition.y-1, room1.name);
         var ePosition2 = new RoomPosition(sPosition.x+1, sPosition.y+1, room1.name);
         var ePosition3 = new RoomPosition(sPosition.x-1, sPosition.y+1, room1.name);
@@ -126,11 +129,6 @@ var architect = {
           // END CONTAINER MINING SWITCH OFF //
           /////////////////////////////////////
 
-
-
-
-
-
         // Extention Creation //
 
         if(room1.controller.level > 1 && terrain.get(ePosition1.x, ePosition1.y) == 0 ||
@@ -183,19 +181,19 @@ var architect = {
            {ePosition16.createConstructionSite(STRUCTURE_EXTENSION);}
 
 
-
+        /////////////////////
         // Tower Creation //
         if(room1.controller.level == 3 && spawn1.memory.towersLvl2 != 1)
         {
           tPosition1.createConstructionSite(STRUCTURE_TOWER);
-          // tPosition2.createConstructionSite(STRUCTURE_TOWER);
-          // tPosition3.createConstructionSite(STRUCTURE_TOWER);
-          // tPosition4.createConstructionSite(STRUCTURE_TOWER);
+          tPosition2.createConstructionSite(STRUCTURE_TOWER);
+          tPosition3.createConstructionSite(STRUCTURE_TOWER);
+          tPosition4.createConstructionSite(STRUCTURE_TOWER);
 
           spawn1.memory.towersLvl2 = 1;
         }
-
-        // Build Roads Around Extensions
+        ///////////////////////////////////
+        // Build Roads Around Extensions //
         var extensions = room1.find(
             FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTENSION}});
 
@@ -205,8 +203,8 @@ var architect = {
           room1.createConstructionSite(extensions[i].pos.x,extensions[i].pos.y+1, STRUCTURE_ROAD);
           room1.createConstructionSite(extensions[i].pos.x,extensions[i].pos.y-1, STRUCTURE_ROAD);
         }
-
-        // Building Roads from the spawn to the sources in the room
+        //////////////////////////////////////////////////////////////
+        // Building Roads from the spawn to the sources in the room //
         var sources = spawn1.room.find(FIND_SOURCES);
 
         if(spawn1.memory.sourceRoads != 1)
@@ -222,7 +220,8 @@ var architect = {
         spawn1.memory.controllerRoads = 1;
         }
 
-        // Build Road to Controller
+        ///////////////////////////////
+        // Build Road to Controller //
         if(spawn1.memory.controllerRoads != 1)
         {
               var chemin = spawn1.pos.findPathTo(cPosition);
@@ -234,6 +233,7 @@ var architect = {
         spawn1.memory.controllerRoads = 1;
         }
 
+        //////////////////////////////
         // Container for Upgrading //
         // Retrieve memory indicating if a container has been built by the controller
         var upgradeContainerExists = spawn1.memory.upgradeContainer;
@@ -270,6 +270,15 @@ var architect = {
 
         }
         else {console.log("No Valid Upgrade Container Locations");}
+
+        ////////////////////////
+        // Storage Container //
+        if(room1.controller.level == 4){
+          storagePosition.createConstructionSite(STRUCTURE_STORAGE);
+        }
+        else {Game.spawns['Spawn1'].room.visual.text("S", storagePosition.x, storagePosition.y, {color: 'white', font: .8}); }
+
+
 
       }
 

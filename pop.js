@@ -4,7 +4,7 @@
 //
 //
 //
-// To Set Desired Populations Use In The Console
+// To Set Desired Populations Use In The Console 
 //
 // Game.spawns['Spawnharvesters_1'].memory.harvesters_1 = 4;
 // with builders,upgraders,defenders,harvesters_0,harvesters_eR1_0 and repairers being other options

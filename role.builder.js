@@ -10,7 +10,17 @@ var roleBuilder = {
         var sources = creep.room.find(FIND_SOURCES);
         var storage = creep.room.storage;
 
-        // If there are no more construction sites then set the spawn amoun back to zero for builders //
+        if(sources[0]){var sourceOne = sources[0];}
+        if(sources[1]){var sourceTwo = sources[1];}
+
+        var containerOne = sourceOne.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        var containerTwo = sourceTwo.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+
+        var containerOneEnergy = containerOne.store[RESOURCE_ENERGY];
+        var containerTwoEnergy = containerTwo.store[RESOURCE_ENERGY];
+
+
+        // If there are no more construction sites then set the spawn amount back to zero for builders //
         if(!targets.length){Game.spawns['Spawn1'].memory.builders = 0;}
 
         // Expansion Builder Variables
@@ -65,9 +75,18 @@ var roleBuilder = {
         }
         // If build mode is off and out of energy
             // Try to find storage first for construction
+            // Then check for containers
             // Then resort to harvesting
         else if(creep.memory.building == false && creep.carry.energy != creep.carryCapacity) {
-            if (storage && storage.store[RESOURCE_ENERGY] >= creep.carryCapacity) {
+            if(containerOne && containerOneEnergy > 0){
+              creep.moveTo(containerOne, {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});
+              creep.withdraw(containerOne, RESOURCE_ENERGY, creep.carryCapacity - creep.carry.energy);
+            }
+            else if(containerTwo && containerTwoEnergy > 0){
+              creep.moveTo(containerTwo, {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});
+              creep.withdraw(containerTwo, RESOURCE_ENERGY, creep.carryCapacity - creep.carry.energy);
+            }
+            else if (storage && storage.store[RESOURCE_ENERGY] >= creep.carryCapacity) {
                 creep.moveTo(storage, {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});
                 creep.withdraw(storage, RESOURCE_ENERGY, creep.carryCapacity - creep.carry.energy);
             }
@@ -75,7 +94,7 @@ var roleBuilder = {
                 creep.moveTo(sources[0], {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});
             }
             else if (creep.carry.energy < creep.carryCapacity) {
-                creep.harvest(sources[0], {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});
+                creep.harvest(sources[1], {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});
             }
             if (creep.carry.energy == creep.carryCapacity) {
                 creep.memory.building = true;
