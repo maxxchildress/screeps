@@ -7,16 +7,10 @@ var _ = require('lodash');
 var roleContainerHarvester = {
 
     /** @param {Creep} creep **/
-    run: function(creep, expansionFlag) {
-
-      var sources = creep.room.find(FIND_SOURCES);
-
-      if(sources[0]){var sourceOne = sources[0];}
-      if(sources[1]){var sourceTwo = sources[1];}
+    run: function(creep, expansionFlag, sourceOne, sourceTwo) {
 
       var containerOne = sourceOne.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
       var containerTwo = sourceTwo.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
-
 
       // Stay on the position of sources extension position Source One
       if(creep.memory.role == 'containerHarvester_0' && creep.pos != containerOne.pos){
@@ -26,7 +20,7 @@ var roleContainerHarvester = {
       if(creep.memory.role == 'containerHarvester_0'){
         creep.harvest(creep.pos.findClosestByRange(FIND_SOURCES));
       }
-      
+
       ///////////////////////////////////////////////////////////////////////////////
       ///////////////////////////////////////////////////////////////////////////////
 

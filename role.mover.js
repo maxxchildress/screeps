@@ -7,16 +7,11 @@ var _ = require('lodash');
 var roleMover = {
 
     /** @param {Creep} creep **/
-    run: function(creep, expansionFlag) {
+    run: function(creep, sourceOne, sourceTwo) {
 
       var role = creep.memory.role;
 
       var noHarvesters = 0;
-
-      var sources = creep.room.find(FIND_SOURCES);
-
-      if(sources[0]){var sourceOne = sources[0];}
-      if(sources[1]){var sourceTwo = sources[1];}
 
       var containerOne = sourceOne.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
       var containerTwo = sourceTwo.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
@@ -72,7 +67,6 @@ var roleMover = {
       ////////Mining Routine //////////
       // Closest Extension to Creep //
       var closestExtension = creep.pos.findClosestByPath(extensions);
-      console.log('containerOne energy: ' + containerOneEnergy);
       // Move to Container One
       if(creep.withdraw(containerOne, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE && creep.carry.energy == 0 && role == 'containerMovers_0' && containerOneEnergy != 0){
         creep.moveTo(containerOne, {visualizePathStyle: {fill: 'transparent',stroke: '#fff',lineStyle: 'dashed',strokeWidth: .15,opacity: .5}});

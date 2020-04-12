@@ -37,6 +37,10 @@ var room1 = spawn1.room;
 var energyAvailable1 = room1.energyAvailable;
 var sources = room1.find(FIND_SOURCES);
 
+if(sources[0]){var sourceOne = sources[0];}
+if(sources[1]){var sourceTwo = sources[1];}
+
+
 // Structures //
 var storage1 = room1.storage;
 var links = room1.find(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK});
@@ -119,7 +123,7 @@ module.exports.loop = function () {
             visuals.run(creep, "🚚");
         }
         if(creep.memory.role == 'containerHarvester_0' || creep.memory.role == 'containerHarvester_1') {
-            roleContainerHarvester.run(creep, expansionFlag1);
+            roleContainerHarvester.run(creep, expansionFlag1, sourceOne, sourceTwo);
             visuals.run(creep, "🚚C");
         }
         if(creep.memory.role == "harvester_eR1_0") {
@@ -163,7 +167,7 @@ module.exports.loop = function () {
             visuals.run(creep, "Lr");
         }
         if(creep.memory.role == 'containerMovers_0' || creep.memory.role == 'containerMovers_1') {
-            roleMover.run(creep);
+            roleMover.run(creep, sourceOne, sourceTwo);
             visuals.run(creep, "Mvr");
         }
 
