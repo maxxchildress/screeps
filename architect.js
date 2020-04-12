@@ -4,14 +4,11 @@
  *
  * You can import it from another modules like this:
  * var mod = require('architect');
- * mod.thing == 'a thing'; // true
+ * mod.thing == 'a thing'; // true 
  */
 
 var architect = {
-    run: function(spawn1, room1, energyAvailable) {
-
-
-
+    run: function(spawn1, room1, energyAvailable, sourceOne, sourceTwo) {
 
         // The First Extension //
 
@@ -51,12 +48,7 @@ var architect = {
         // Controller Level 3 Switch to Container Mining //
         var containerMining = spawn1.memory.containerMining;
         if(room1.controller.level == 3 && containerMining != 1) {
-          // Define The sources
 
-          var sources = room1.find(FIND_SOURCES);
-
-          if(sources[0]){var sourceOne = sources[0]; var sourceOnePos = sourceOne.pos;}
-          if(sources[1]){var sourceTwo = sources[1]; var sourceTwoPos = sourceOne.pos;}
           // Source Two Extension Construction
           if(sourceTwo && validSpot != 1){
             if(terrain.get(sourceTwoPos.x+1,sourceTwoPos.y) == 0 || terrain.get(sourceTwoPos.x+1,sourceTwoPos.y) == 2 ){

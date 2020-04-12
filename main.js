@@ -40,7 +40,6 @@ var sources = room1.find(FIND_SOURCES);
 if(sources[0]){var sourceOne = sources[0];}
 if(sources[1]){var sourceTwo = sources[1];}
 
-
 // Structures //
 var storage1 = room1.storage;
 var links = room1.find(FIND_STRUCTURES, { filter: (s) => s.structureType == STRUCTURE_LINK});
@@ -50,6 +49,7 @@ var towers1 = room1.find(FIND_STRUCTURES, { filter: (s) => s.structureType == ST
 var needsSomeRepair = room1.find(FIND_STRUCTURES, { filter: object => object.hits < object.hitsMax });
 
 // For introducing second spawns and expansions //
+var expansionFlag1 = 0;
 var spawn2 = Game.spawns['Spawn2'];
     if(spawn2){var room2 = spawn2.room;}
     if(Game.flags['expand1']) {var expansionFlag1 = Game.flags['expand1'];}
@@ -112,14 +112,14 @@ module.exports.loop = function () {
     /////////////////////////////////////////////////////////////////////////////////////////
     // Execute the Architect                                                               //
     //                                                                                     //
-    architect.run(spawn1, room1, energyAvailable1);
+    architect.run(spawn1, room1, energyAvailable1, sourceOne, sourceTwo);
 
     // Run Creep modules
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
 
         if(creep.memory.role == 'harvester_0' || creep.memory.role == 'harvester_1' || creep.memory.role == 'harvester_2' || creep.memory.role == 'harvester_3') {
-            roleHarvester.run(creep, expansionFlag1);
+            roleHarvester.run(creep, sourceOne, sourceTwo);
             visuals.run(creep, "🚚");
         }
         if(creep.memory.role == 'containerHarvester_0' || creep.memory.role == 'containerHarvester_1') {

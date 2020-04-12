@@ -9,14 +9,15 @@ var roleBuilder = {
         var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         var sources = creep.room.find(FIND_SOURCES);
         var storage = creep.room.storage;
-
-        if(containerOne != null && containerTwo != null){
-          var containerOne = sourceOne.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
-          var containerTwo = sourceTwo.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        // console.log(sourceOne);
+        // console.log(sourceTwo);
+        var containerOne = sourceOne.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        var containerTwo = sourceTwo.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        
+        if(containerOne != null){
+            var containerOneEnergy = containerOne.store[RESOURCE_ENERGY];
+            var containerTwoEnergy = containerTwo.store[RESOURCE_ENERGY];
         }
-        var containerOneEnergy = containerOne.store[RESOURCE_ENERGY];
-        var containerTwoEnergy = containerTwo.store[RESOURCE_ENERGY];
-
 
         // If there are no more construction sites then set the spawn amount back to zero for builders //
         if(!targets.length){Game.spawns['Spawn1'].memory.builders = 0;}

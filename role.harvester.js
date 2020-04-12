@@ -1,5 +1,5 @@
 //////////// Harvester Routine //////////////
-// To Do List: 1. Improve building mode import builder routine?
+// To Do List: 1. 
 //             2.
 
 var roleBuilder = require('role.builder');
@@ -11,7 +11,7 @@ var links = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, { filter: (s) => s.
 var roleHarvester = {
 
     /** @param {Creep} creep **/
-    run: function(creep, expansionFlag) {
+    run: function(creep, sourceOne, sourceTwo) {
         var spawn1 = Game.spawns['Spawn1'];
         var homeRoom = spawn1.room;
         var towerEnergyDifference = 0;
@@ -178,7 +178,7 @@ var roleHarvester = {
         else if(creep.room.energyAvailable == creep.room.energyCapacityAvailable) {
             // If there ARE construction sites begin constructing
             if(targets.length) {
-                roleBuilder.run(creep);
+                roleBuilder.run(creep, sourceOne, sourceTwo);
             }
             // else {creep.memory.building = false; roleUpgrader.run(creep);}
         }
