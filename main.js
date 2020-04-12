@@ -143,7 +143,7 @@ module.exports.loop = function () {
             visuals.run(creep, "🔅");
         }
         if(creep.memory.role == 'builder') {
-            roleBuilder.run(creep);
+            roleBuilder.run(creep, sourceOne, sourceTwo);
             visuals.run(creep, "🔨");
         }
         if(creep.memory.role == 'expansionBuilder') {

@@ -5,13 +5,10 @@ var roleBuilder = {
     /** @param {Creep} creep **/
     // For builders to gather when there is nothing to build you must set
     // a flag called 'townHall' for them to return to.
-    run: function(creep, expansionFlag) {
+    run: function(creep, sourceOne, sourceTwo) {
         var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         var sources = creep.room.find(FIND_SOURCES);
         var storage = creep.room.storage;
-
-        if(sources[0]){var sourceOne = sources[0];}
-        if(sources[1]){var sourceTwo = sources[1];}
 
         var containerOne = sourceOne.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
         var containerTwo = sourceTwo.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
@@ -41,9 +38,6 @@ var roleBuilder = {
         if(creep.carry.energy == 0) { creep.memory.building = false; /*console.log(creep.name + ' has no energy and needs to harvest.');*/ }
         // Check if there are no targets if not disable build mode
         if(!targets.length) {creep.memory.building = false; /*console.log(creep.name + ' has nothing to build and should go home.');*/ }
-        // console.log('Construction Targets: ' + targets.length);
-        // console.log(creep.name + ' building is set to ' + creep.memory.building);
-
 
         //////////////////////////////////////////////////
         // If Expansion Builder
