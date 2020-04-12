@@ -10,9 +10,10 @@ var roleBuilder = {
         var sources = creep.room.find(FIND_SOURCES);
         var storage = creep.room.storage;
 
-        var containerOne = sourceOne.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
-        var containerTwo = sourceTwo.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
-
+        if(containerOne != null && containerTwo != null){
+          var containerOne = sourceOne.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+          var containerTwo = sourceTwo.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        }
         var containerOneEnergy = containerOne.store[RESOURCE_ENERGY];
         var containerTwoEnergy = containerTwo.store[RESOURCE_ENERGY];
 
